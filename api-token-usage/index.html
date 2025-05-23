@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Key Token Usage Statistics</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>API Key Token Usage Statistics</h1>
+      <div class="controls">
+        <div class="control-group">
+          <label for="time-range">Time Range:</label>
+          <select id="time-range">
+            <option value="day">Last 24 Hours</option>
+            <option value="week">Last Week</option>
+            <option value="month" selected>Last Month</option>
+            <option value="year">Last Year</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="api-key-filter">API Key:</label>
+          <select id="api-key-filter">
+            <option value="all" selected>All Keys</option>
+            <!-- API keys will be populated dynamically -->
+          </select>
+        </div>
+        <button id="refresh-btn">Refresh Data</button>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Tokens</h3>
+          <p id="total-tokens">0</p>
+        </div>
+        <div class="card">
+          <h3>Input Tokens</h3>
+          <p id="input-tokens">0</p>
+        </div>
+        <div class="card">
+          <h3>Output Tokens</h3>
+          <p id="output-tokens">0</p>
+        </div>
+        <div class="card">
+          <h3>Active API Keys</h3>
+          <p id="active-keys">0</p>
+        </div>
+      </div>
+
+      <div class="charts-container">
+        <div class="chart-wrapper">
+          <h3>Token Usage by Model</h3>
+          <canvas id="model-usage-chart"></canvas>
+        </div>
+        <div class="chart-wrapper">
+          <h3>Token Usage Over Time</h3>
+          <canvas id="time-series-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <h3>Detailed Usage by API Key</h3>
+        <table id="usage-table">
+          <thead>
+            <tr>
+              <th>API Key</th>
+              <th>Model</th>
+              <th>Input Tokens</th>
+              <th>Output Tokens</th>
+              <th>Total Tokens</th>
+              <th>Last Used</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Table data will be populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
