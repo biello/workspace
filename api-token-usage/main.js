@@ -36,23 +36,34 @@ function generateMockData() {
       if (!usedModels.includes(model)) {
         usedModels.push(model);
         
-        // Generate random token counts
-        const inputTokens = Math.floor(Math.random() * 500000) + 10000;
-        const outputTokens = Math.floor(Math.random() * 300000) + 5000;
-        
-        // Generate random date within the last month
-        const daysAgo = Math.floor(Math.random() * 30);
-        const lastUsed = new Date(now);
-        lastUsed.setDate(lastUsed.getDate() - daysAgo);
-        
-        usageData.push({
-          apiKey,
-          model,
-          inputTokens,
-          outputTokens,
-          totalTokens: inputTokens + outputTokens,
-          lastUsed
-        });
+        // Generate data points for multiple days
+        for (let day = 0; day < 60; day++) {
+          // Skip some days randomly to create more realistic patterns
+          if (Math.random() > 0.7) {
+            continue;
+          }
+          
+          // Generate random token counts
+          const inputTokens = Math.floor(Math.random() * 50000) + 1000;
+          const outputTokens = Math.floor(Math.random() * 30000) + 500;
+          
+          // Set date for this data point
+          const lastUsed = new Date(now);
+          lastUsed.setDate(lastUsed.getDate() - day);
+          // Set to a random hour in the day
+          lastUsed.setHours(Math.floor(Math.random() * 24), 
+                           Math.floor(Math.random() * 60), 
+                           Math.floor(Math.random() * 60));
+          
+          usageData.push({
+            apiKey,
+            model,
+            inputTokens,
+            outputTokens,
+            totalTokens: inputTokens + outputTokens,
+            lastUsed
+          });
+        }
       }
     }
   });
@@ -219,21 +230,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Determine start date based on selected time range
     switch (selectedTimeRange) {
-      case 'day':
-        startDate = new Date(now);
-        startDate.setDate(startDate.getDate() - 1);
-        break;
       case 'week':
         startDate = new Date(now);
         startDate.setDate(startDate.getDate() - 7);
         break;
       case 'month':
         startDate = new Date(now);
-        startDate.setMonth(startDate.getMonth() - 1);
+        startDate.setDate(startDate.getDate() - 30);
         break;
       case 'year':
         startDate = new Date(now);
-        startDate.setFullYear(startDate.getFullYear() - 1);
+        startDate.setMonth(startDate.getMonth() - 12);
         break;
     }
     
@@ -244,35 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateLabels = [];
     const dateData = [];
     
-    if (selectedTimeRange === 'day') {
-      // Hourly intervals for last 24 hours
-      for (let i = 0; i < 24; i++) {
-        const date = new Date(now);
-        date.setHours(date.getHours() - i);
-        date.setMinutes(0, 0, 0);
-        
-        const label = date.toLocaleTimeString([], { hour: '2-digit' });
-        dateLabels.unshift(label);
-        dateData.unshift(0);
-      }
-      
-      // Aggregate data by hour
-      timeFilteredData.forEach(item => {
-        const itemDate = new Date(item.lastUsed);
-        const hourIndex = Math.floor((now - itemDate) / (1000 * 60 * 60));
-        
-        if (hourIndex >= 0 && hourIndex < 24) {
-          dateData[hourIndex] += item.totalTokens;
-        }
-      });
-    } else if (selectedTimeRange === 'week') {
-      // Daily intervals for last week
+    if (selectedTimeRange === 'week') {
+      // Daily intervals for last 7 days
       for (let i = 0; i < 7; i++) {
         const date = new Date(now);
         date.setDate(date.getDate() - i);
         date.setHours(0, 0, 0, 0);
         
-        const label = date.toLocaleDateString([], { weekday: 'short' });
+        const label = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
         dateLabels.unshift(label);
         dateData.unshift(0);
       }
@@ -294,8 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
         date.setDate(date.getDate() - i);
         date.setHours(0, 0, 0, 0);
         
+        // For month view, show every 3rd day label to avoid crowding
         const label = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-        dateLabels.unshift(label);
+        dateLabels.unshift(i % 3 === 0 ? label : '');
         dateData.unshift(0);
       }
       
@@ -310,14 +297,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     } else if (selectedTimeRange === 'year') {
-      // Monthly intervals for last year
+      // Monthly intervals for last 12 months
       for (let i = 0; i < 12; i++) {
         const date = new Date(now);
         date.setMonth(date.getMonth() - i);
         date.setDate(1);
         date.setHours(0, 0, 0, 0);
         
-        const label = date.toLocaleDateString([], { month: 'short' });
+        const label = date.toLocaleDateString([], { month: 'short', year: 'numeric' });
         dateLabels.unshift(label);
         dateData.unshift(0);
       }
