@@ -186,6 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
             title: {
               display: true,
               text: 'Model'
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45
             }
           }
         },
@@ -368,6 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
             title: {
               display: true,
               text: 'Time Period'
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45
             }
           }
         },
